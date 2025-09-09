@@ -28,10 +28,12 @@ export default function Home() {
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     async function fetchMarkers() {
-      const snapshot = await getDocs(collection(db, "markers"));
+      const snapshot = await getDocs(collection(db, "locations"));
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setMarkers(data as Array<{ id: string; lat: number; lng: number }>);
       setLoading(false);
+
+      console.log("Fetched markers:", data);
     }
     fetchMarkers();
   }, []);
@@ -50,7 +52,7 @@ export default function Home() {
             key={marker.id}
             style={{
               position: "absolute",
-              transform: "translate(-50%, -50%)",
+              // transform: "translate(-50%, -50%)",
               color: "red",
               fontWeight: "bold",
               left: `${marker.lng}px`, // Placeholder, must use overlay for correct positioning
