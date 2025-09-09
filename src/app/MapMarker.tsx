@@ -86,10 +86,10 @@ interface MapMarkerProps {
   focus?: boolean;
   showLabel?: boolean;
   name_short?: string;
+  onClick?: () => void;
 }
 
-export default function MapMarker({ lat, lng, id, tags = "", focus = false, showLabel = false, name_short = "" }: MapMarkerProps) {
-  const theme = useTheme();
+export default function MapMarker({ lat, lng, id, tags = "", focus = false, showLabel = false, name_short = "", onClick }: MapMarkerProps) {
   const [iconData, setIconData] = React.useState<{ icon: React.ReactNode; color: string }>({ icon: null, color: "pinDefault" });
 
   React.useEffect(() => {
@@ -108,7 +108,7 @@ export default function MapMarker({ lat, lng, id, tags = "", focus = false, show
   }, [id, tags]);
 
   const handleClick = () => {
-    // You can add a callback here for pin click
+    if (onClick) onClick();
   };
 
   return (
