@@ -19,7 +19,7 @@ import Typography from "@mui/material/Typography";
 import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs, doc, getDoc } from "firebase/firestore";
 
 import MapMarker from "./MapMarker";
 
@@ -47,11 +47,16 @@ export default function Home() {
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     async function fetchMarkers() {
-      const snapshot = await getDocs(collection(db, "locations"));
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setMarkers(data);
+      // Fetch the settings document containing index_pins
+      const settingsDoc = await getDoc(doc(db, "settings", "index_pins"));
+      let pins = [];
+      if (settingsDoc.exists()) {
+        const data = settingsDoc.data();
+        pins = data.pins || data.index_pins || [];
+      }
+      setMarkers(pins);
       setLoading(false);
-      console.log("Fetched markers:", data);
+      console.log("Fetched pins from settings.index_pins:", pins);
     }
     fetchMarkers();
   }, []);
