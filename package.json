@@ -12,6 +12,9 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^7.3.2",
+    "@react-google-maps/api": "^2.20.7",
+    "firebase": "^12.2.1",
+    "google-maps-react-markers": "^2.0.15",
     "next": "15.5.2",
     "react": "19.1.0",
     "react-dom": "19.1.0"
