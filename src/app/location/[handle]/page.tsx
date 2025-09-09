@@ -9,20 +9,18 @@ function slugify(str: string): string {
     .replace(/--+/g, '-');
 }
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Box from "@mui/material/Box";
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
-
-import MapMarker from "./MapMarker";
-
+import MapMarker from "../../MapMarker";
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.VITE_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || process.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -32,16 +30,15 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || process.env.VITE_FIREBASE_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || process.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
-
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLEMAPS_API_KEY || process.env.VITE_GOOGLEMAPS_API_KEY || "";
-
 import GoogleMap from "google-maps-react-markers";
 
-export default function Home() {
+export default function LocationPage() {
   const [markers, setMarkers] = useState<Array<any>>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMarker, setSelectedMarker] = useState<any | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const app = initializeApp(firebaseConfig);
@@ -56,7 +53,7 @@ export default function Home() {
     fetchMarkers();
   }, []);
 
-  // Deep linking: open dialog if ?location= is in URL
+  // Get handle from URL path
   useEffect(() => {
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
@@ -80,7 +77,9 @@ export default function Home() {
 
   const handleDialogClose = () => {
     setSelectedMarker(null);
-    router.replace("/", { scroll: false });
+    const url = new URL(window.location.href);
+    url.searchParams.delete("location");
+    router.replace(url.pathname + url.search, { scroll: false });
   };
 
   if (loading) return <div>Loading map and markers...</div>;
@@ -115,4 +114,3 @@ export default function Home() {
     </Box>
   );
 }
-
