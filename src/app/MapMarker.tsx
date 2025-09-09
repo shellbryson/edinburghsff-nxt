@@ -47,7 +47,7 @@ const IconBox = styled(Box)<IconBoxProps>(({ theme, color = "pinDefault", isFocu
     height: "calc(1rem)",
     clear: "both",
     transform: "rotate(45deg)",
-  backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.main,
     zIndex: "-1"
   },
   '> svg': {
@@ -113,7 +113,7 @@ export default function MapMarker({ lat, lng, id, tags = "", focus = false, show
 
   return (
     <PinBox className="sff-map-pin" onClick={handleClick}>
-      <IconBox color={iconData.color} isFocused={!!focus} className="sff-map-icon">{iconData.icon}</IconBox>
+      <IconBox color={iconData.color} className="sff-map-icon">{iconData.icon}</IconBox>
       {showLabel && (
         <LabelBox color={iconData.color} className="sff-map-label">
           <Typography component="p">{name_short}</Typography>
