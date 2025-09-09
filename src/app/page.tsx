@@ -17,11 +17,12 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useRouter } from "next/navigation";
-import Box from "@mui/material/Box";
+// ...existing code...
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, doc, getDoc } from "firebase/firestore";
 
 import MapMarker from "./MapMarker";
+import GoogleMap from "google-maps-react-markers";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.VITE_FIREBASE_API_KEY,
@@ -35,7 +36,13 @@ const firebaseConfig = {
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLEMAPS_API_KEY || process.env.VITE_GOOGLEMAPS_API_KEY || "";
 
-import GoogleMap from "google-maps-react-markers";
+
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import Link from "next/link";
+import Box from "@mui/material/Box";
 
 export default function Home() {
   const [markers, setMarkers] = useState<Array<any>>([]);
@@ -92,31 +99,48 @@ export default function Home() {
 
   return (
     <Box sx={{ width: "100vw", height: "100vh" }}>
-      <GoogleMap
-        apiKey={GOOGLE_MAPS_API_KEY}
-        style={{ width: "100%", height: "100%" }}
-        defaultCenter={{ lat: 55.9533, lng: -3.1883 }}
-        defaultZoom={12}
-      >
-        {markers.map(marker => (
-          <MapMarker key={marker.id} {...marker} onClick={() => handleMarkerClick(marker)} />
-        ))}
-      </GoogleMap>
-      <Dialog open={!!selectedMarker} onClose={handleDialogClose}>
-        <DialogTitle>{selectedMarker?.name || "Location Info"}</DialogTitle>
-        <DialogContent>
-          <Typography variant="body1">{selectedMarker?.description || "No description available."}</Typography>
-          <Typography variant="body2" sx={{ mt: 2 }}>
-            <strong>Handle:</strong> {selectedMarker?.handle}
-          </Typography>
-          <Typography variant="body2">
-            <strong>Lat:</strong> {selectedMarker?.lat}, <strong>Lng:</strong> {selectedMarker?.lng}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>Close</Button>
-        </DialogActions>
-      </Dialog>
+      <AppBar position="fixed" color="primary" sx={{ zIndex: 1201 }}>
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 1 }}>
+              <MenuIcon />
+            </IconButton>
+            <Link href="/" style={{ display: "flex", alignItems: "center" }}>
+              <img src="/logo.svg" alt="Logo" style={{ height: 32, marginLeft: 4, marginRight: 8 }} />
+            </Link>
+          </Box>
+          <Link href="/pages" style={{ color: "inherit", textDecoration: "none", fontWeight: 500, fontSize: "1rem" }}>
+            Pages
+          </Link>
+        </Toolbar>
+      </AppBar>
+      <Box sx={{ pt: 8, width: "100%", height: "100%" }}>
+        <GoogleMap
+          apiKey={GOOGLE_MAPS_API_KEY}
+          style={{ width: "100%", height: "100%" }}
+          defaultCenter={{ lat: 55.9533, lng: -3.1883 }}
+          defaultZoom={12}
+        >
+          {markers.map(marker => (
+            <MapMarker key={marker.id} {...marker} onClick={() => handleMarkerClick(marker)} />
+          ))}
+        </GoogleMap>
+        <Dialog open={!!selectedMarker} onClose={handleDialogClose}>
+          <DialogTitle>{selectedMarker?.name || "Location Info"}</DialogTitle>
+          <DialogContent>
+            <Typography variant="body1">{selectedMarker?.description || "No description available."}</Typography>
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              <strong>Handle:</strong> {selectedMarker?.handle}
+            </Typography>
+            <Typography variant="body2">
+              <strong>Lat:</strong> {selectedMarker?.lat}, <strong>Lng:</strong> {selectedMarker?.lng}
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDialogClose}>Close</Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
     </Box>
   );
 }
