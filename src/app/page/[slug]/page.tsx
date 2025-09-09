@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import { headers } from "next/headers";
+import ListBlock from "../../ListBlock";
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const hdrs = await headers();
@@ -10,10 +11,18 @@ export default async function Page({ params }: { params: { slug: string } }) {
   const res = await fetch(`${protocol}://${host}/api/page/${params.slug}`, { cache: "no-store" });
   if (!res.ok) return notFound();
   const page = await res.json();
+  let listData = null;
+  if (page.list) {
+    const listRes = await fetch(`${protocol}://${host}/api/list/${page.list}`, { cache: "no-store" });
+    if (listRes.ok) {
+      listData = await listRes.json();
+    }
+  }
   return (
     <main style={{ maxWidth: 700, margin: "2rem auto" }}>
       <h1>{page.title || page.slug}</h1>
       <ReactMarkdown>{page.content || ""}</ReactMarkdown>
+      {listData && <ListBlock list={listData} />}
     </main>
   );
 }
