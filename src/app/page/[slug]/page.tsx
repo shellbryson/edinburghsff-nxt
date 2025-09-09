@@ -4,7 +4,8 @@ import ReactMarkdown from "react-markdown";
 import { headers } from "next/headers";
 import ListBlock from "../../ListBlock";
 
-export default async function Page({ params }: { params: { slug: string } }) {
+export default async function Page(props: { params: { slug: string } }) {
+  const { params } = await Promise.resolve(props);
   const hdrs = await headers();
   const host = hdrs.get("host");
   const protocol = host?.startsWith("localhost") ? "http" : "https";
