@@ -17,7 +17,25 @@ const firebaseConfig = {
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLEMAPS_API_KEY || process.env.VITE_GOOGLEMAPS_API_KEY || "";
 
 
+
 import GoogleMap from "google-maps-react-markers";
+
+function MapMarker({ lat, lng, id }: { lat: number; lng: number; id: string }) {
+  return (
+    <div
+      style={{
+        color: "red",
+        fontWeight: "bold",
+        background: "white",
+        borderRadius: "50%",
+        padding: "2px 6px",
+        boxShadow: "0 0 2px #0002"
+      }}
+    >
+      ●
+    </div>
+  );
+}
 
 export default function Home() {
   const [markers, setMarkers] = useState<Array<{ id: string; lat: number; lng: number }>>([]);
@@ -48,19 +66,7 @@ export default function Home() {
         defaultZoom={12}
       >
         {markers.map(marker => (
-          <div
-            key={marker.id}
-            style={{
-              position: "absolute",
-              // transform: "translate(-50%, -50%)",
-              color: "red",
-              fontWeight: "bold",
-              left: `${marker.lng}px`, // Placeholder, must use overlay for correct positioning
-              top: `${marker.lat}px`,  // Placeholder, must use overlay for correct positioning
-            }}
-          >
-            ●
-          </div>
+          <MapMarker key={marker.id} id={marker.id} lat={marker.lat} lng={marker.lng} />
         ))}
       </GoogleMap>
     </Box>
